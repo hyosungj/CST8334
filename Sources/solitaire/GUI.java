@@ -172,7 +172,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			displayText = new HashMap<String, String>();
 			
 //			displayText.put("File", "File");
-//			displayText.put("New", "New");
+     		displayText.put("New", "New");
 			displayText.put("Menu", "Menu");
 			displayText.put("Shuffle Demo", "Shuffle Demo");
 //			displayText.put("Save", "Save");
@@ -192,7 +192,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			menuBar.add(FileMenu);
 			
 			menuOption[] fileOptions = new menuOption[] {
-//				new menuOption(displayText.get("New"), KeyEvent.VK_N),
+  			new menuOption(displayText.get("New"), KeyEvent.VK_N),
 //				new menuOption(displayText.get("Save"), KeyEvent.VK_S),
 //				new menuOption(displayText.get("Load"), KeyEvent.VK_L),
 				new menuOption(displayText.get("Shuffle Demo"), KeyEvent.VK_S),
@@ -246,6 +246,10 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			
 			if(item.getText().equals(displayText.get("Exit"))) {
 				this.dispose();
+				return;
+			}
+			if(item.getText().equals(displayText.get("New"))) {
+				reset();
 				return;
 			}
 			if(item.getText().equals(displayText.get("Shuffle Demo"))) {
