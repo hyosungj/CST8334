@@ -20,8 +20,8 @@ public class Pile extends JLayeredPane {
 	Pile parent;
 	PileType type;
 	
-	// HJ: Normal = Tableau, Final = Foundation, Draw = Stock, Get = Talon.
-	enum PileType {Normal, Draw, Get, Final};
+	// HJ: Tableau = Tableau, Foundation = Foundation, Draw = Stock, Get = Talon.
+	enum PileType {TABLEAU, STOCK, TALON, FOUNDATION};
 	
 	/**
 	 * Class constructor
@@ -35,7 +35,7 @@ public class Pile extends JLayeredPane {
 		base = new Card(100, Suit.Spades);
 		add(base, 1, 0);
 		
-		type = PileType.Normal;
+		type = PileType.TABLEAU;
 	}
 	
 	
@@ -190,7 +190,7 @@ public class Pile extends JLayeredPane {
 		switch(type) {
 		
 			// If for tableau pile.
-			case Normal:
+			case TABLEAU:
 				// If it's empty it can only receive a King
 				if(cards.isEmpty()) {
 					if(newCard.value == 13) return true;
@@ -209,7 +209,7 @@ public class Pile extends JLayeredPane {
 			break;
 			
 			// HJ: If for foundation pile.
-			case Final:
+			case FOUNDATION:
 				
 				// Merge with a single card	//HJ: only single cards can be sent at a time.
 				if(p.cards.size() > 1) return false;

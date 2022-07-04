@@ -139,10 +139,10 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				columns.add(p);
 			}
 			
-			topColumns.add(game.drawPile);
-			topColumns.add(game.getPile);
+			topColumns.add(game.stockPile);
+			topColumns.add(game.talonPile);
 			
-			for(Pile p : game.finalPiles) {
+			for(Pile p : game.foundationPiles) {
 				topColumns.add(p);
 			}
 			
@@ -305,14 +305,14 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				Pile p = (Pile)c.getParent();
 				
 				switch(p.type) {
-					case Draw:
+					case STOCK:
 						game.drawCard();
 					break;
-					case Normal:
+					case TABLEAU:
 						game.clickPile(p);
 					break;
-					case Get:
-						game.turnGetPile();
+					case TALON:
+						game.turnTalonPile();
 					break;
 				}	
 				repaint();
@@ -330,7 +330,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				
 				Pile p  = (Pile)c.getParent();
 				
-				if(p.cards.isEmpty() || p.type == PileType.Final) return;
+				if(p.cards.isEmpty() || p.type == PileType.FOUNDATION) return;
 				
 				tempPile = p.split(c);
 
@@ -357,7 +357,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				
 				// Check if pile can merge with the pile it is dropped on
 				ArrayList<Pile> droppable = new ArrayList<Pile>(game.piles);
-				droppable.addAll(game.finalPiles);
+				droppable.addAll(game.foundationPiles);
 				
 				for(Pile p: droppable) {
 					Point pilePos = p.getLocationOnScreen();
