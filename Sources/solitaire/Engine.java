@@ -28,11 +28,11 @@ import solitaire.Pile.PileType;
 public class Engine {
 	
 	// HJ: piles ArrayList below appear to be for the Tableau columns.
-	ArrayList<Pile> piles;
+	ArrayList<Pile> tableauPiles;
 	ArrayList<Pile> foundationPiles;
 	Pile stockPile, talonPile;
 	ArrayList<Pile> allPiles;
-	public final int pileNumber = 7;
+	public final int numberTableauPiles = 7;
 	public Deck deck;
 	
 	/**
@@ -60,7 +60,7 @@ public class Engine {
 		
 		// HJ: Foundation pile.
 		foundationPiles = new ArrayList<Pile>();
-		piles = new ArrayList<Pile>();
+		tableauPiles = new ArrayList<Pile>();
 		
 		allPiles = new ArrayList<Pile>();
 		allPiles.add(stockPile);
@@ -83,7 +83,7 @@ public class Engine {
 		
 		// HJ: Foundation pile.
 		foundationPiles = new ArrayList<Pile>();
-		piles = new ArrayList<Pile>();
+		tableauPiles = new ArrayList<Pile>();
 		
 		allPiles = new ArrayList<Pile>();
 		allPiles.add(stockPile);
@@ -98,7 +98,7 @@ public class Engine {
 		stockPile.type = PileType.STOCK;
 		talonPile.type = PileType.TALON;
 
-		for(int i = 1; i <= pileNumber; ++i) {
+		for(int i = 1; i <= numberTableauPiles; ++i) {
 			Pile p = new Pile(120);
 			
 			// Add i cards to the current pile
@@ -112,7 +112,7 @@ public class Engine {
 					card.show();
 			}
 			
-			piles.add(p);
+			tableauPiles.add(p);
 			allPiles.add(p);
 		}
 		
@@ -204,7 +204,7 @@ public class Engine {
 			doc.appendChild(game);
 			
 			// This is from previous implementation, save each pile in a new line
-			for(Pile p : piles)
+			for(Pile p : tableauPiles)
 				saveString += p.toString() + newLine;
 			for(Pile p: foundationPiles)
 				saveString += p.toString() + newLine;
@@ -404,19 +404,19 @@ public class Engine {
 							}
 
 							// Add the cards to the correct pile
-							if (currentPileCount < pileNumber) {
-								piles.get(currentPileCount).merge(tempPile);
-							} else if (currentPileCount < pileNumber + 4) {
-								foundationPiles.get(currentPileCount - pileNumber)
+							if (currentPileCount < numberTableauPiles) {
+								tableauPiles.get(currentPileCount).merge(tempPile);
+							} else if (currentPileCount < numberTableauPiles + 4) {
+								foundationPiles.get(currentPileCount - numberTableauPiles)
 										.merge(tempPile);
 
 								if (!tempPile.isEmpty()) {
 									// Set the pile filter for foundation piles
 									Card c = tempPile.peekTopCard();
 									foundationPiles.get(currentPileCount
-											- pileNumber).suitFilter = c.suit;
+											- numberTableauPiles).suitFilter = c.suit;
 								}
-							} else if (currentPileCount == pileNumber + 4) {
+							} else if (currentPileCount == numberTableauPiles + 4) {
 								stockPile.merge(tempPile);
 							} else {
 								talonPile.merge(tempPile);

@@ -135,7 +135,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			}
 			
 			game.setupGame();
-			for(Pile p : game.piles) {
+			for(Pile p : game.tableauPiles) {
 				columns.add(p);
 			}
 			
@@ -356,7 +356,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				boolean match = false;
 				
 				// Check if pile can merge with the pile it is dropped on
-				ArrayList<Pile> droppable = new ArrayList<Pile>(game.piles);
+				ArrayList<Pile> droppable = new ArrayList<Pile>(game.tableauPiles);
 				droppable.addAll(game.foundationPiles);
 				
 				for(Pile p: droppable) {
