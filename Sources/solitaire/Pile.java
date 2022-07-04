@@ -193,7 +193,7 @@ public class Pile extends JLayeredPane {
 			case Normal:
 				// If it's empty it can only receive a King
 				if(cards.isEmpty()) {
-					if(newCard.value == 14) return true;
+					if(newCard.value == 13) return true;
 					return false;
 				}
 				
@@ -201,11 +201,9 @@ public class Pile extends JLayeredPane {
 				// HJ: if the top card is reversed in Tableau, then a new card can't be placed there.
 				if(topCard.isReversed) return false;
 				
-				// Different color, consecutive values, descending
-				// HJ: Below logic can become simplified if 11 is not skipped in card generation.
+				// Different colour, consecutive values, descending
 				if(topCard.suit.isRed != newCard.suit.isRed)
-				   if(topCard.value == newCard.value + 1 ||
-				      topCard.value ==  12 && newCard.value == 10) {
+				   if(topCard.value == newCard.value + 1) {
 					   return true;				
 				   }
 			break;
@@ -222,13 +220,12 @@ public class Pile extends JLayeredPane {
 					return true;
 				}
 				
-				// Has to be the same color //HJ: more specifically, it has to be the same suit.
+				// Has to be the same colour //HJ: more specifically, it has to be the same suit.
 				if(suitFilter != newCard.suit) return false;
 				
 				// Consecutive values, ascending
 				topCard = cards.get(cards.size() - 1);
-				if(topCard.value == newCard.value - 1 ||
-				   topCard.value ==  10 && newCard.value == 12) {
+				if(topCard.value == newCard.value - 1) {
 					return true;
 				}
 			break;

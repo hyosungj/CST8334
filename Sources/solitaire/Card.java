@@ -49,9 +49,9 @@ public class Card extends JPanel{
 		 */
 		public static String valueString(int value) {
 								
-			if(value == 12) return "J";
-			if(value == 13) return "Q";
-			if(value == 14) return "K";
+			if(value == 11) return "J";
+			if(value == 12) return "Q";
+			if(value == 13) return "K";
 			if(value == 1) return "A";
 			
 			// Value between 2 and 10
@@ -64,9 +64,9 @@ public class Card extends JPanel{
 		 */
 		public static int valueInt(String value) {
 			
-			if(value.equals("J")) return 12;
-			if(value.equals("Q")) return 13;
-			if(value.equals("K")) return 14;
+			if(value.equals("J")) return 11;
+			if(value.equals("Q")) return 12;
+			if(value.equals("K")) return 13;
 			if(value.equals("A")) return 1;
 			
 			return Integer.parseInt(value);
@@ -91,7 +91,7 @@ public class Card extends JPanel{
 		
 		/**
 		 * Class constructor
-		 * @param {Integer} value The value of the card, in [1,14]
+		 * @param {Integer} value The value of the card, in [1,13]
 		 * @param {Suit} suit The suit of the card
 		 */
 		public Card(int value, Suit suit) {

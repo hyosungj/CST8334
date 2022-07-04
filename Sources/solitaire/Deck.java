@@ -22,10 +22,8 @@ public class Deck {
 		cards = new ArrayList<Card>();
 		
 		for(Suit suit : Suit.values()) {
-			for(int value = 1; value <= 14; ++value) {
-				// HJ: why skip eleven? why not just have 11 stand in for J?
-				if(value != 11)
-					cards.add(new Card(value, suit));
+			for(int value = 1; value <= 13; ++value) {
+				cards.add(new Card(value, suit));
 			}
 		}
 	}
