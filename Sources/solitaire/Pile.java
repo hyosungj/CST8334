@@ -31,7 +31,7 @@ public class Pile extends JLayeredPane {
 		cards = new ArrayList<Card>();
 		this.width = width;
 		
-		// HJ: a 100 of spades is created for...?
+		// HJ: a 100 of spades is created for determining the "base" card - the bottom of each pile.
 		base = new Card(100, Suit.Spades);
 		add(base, 1, 0);
 		
