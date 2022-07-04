@@ -60,7 +60,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			
 			
 			// Window settings
-			setTitle("CST8322 Group 2 Assignment 1 Prototype");
+			setTitle("CST8322 Group 2 Assignment 2 Release 1");
 //			setSize(900, 700);
 			setSize(900, 1000);
 			
@@ -135,14 +135,14 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			}
 			
 			game.setupGame();
-			for(Pile p : game.piles) {
+			for(Pile p : game.tableauPiles) {
 				columns.add(p);
 			}
 			
-			topColumns.add(game.drawPile);
-			topColumns.add(game.getPile);
+			topColumns.add(game.stockPile);
+			topColumns.add(game.talonPile);
 			
-			for(Pile p : game.finalPiles) {
+			for(Pile p : game.foundationPiles) {
 				topColumns.add(p);
 			}
 			
@@ -172,9 +172,9 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			displayText = new HashMap<String, String>();
 			
 //			displayText.put("File", "File");
-//			displayText.put("New", "New");
+     		displayText.put("New", "New");
 			displayText.put("Menu", "Menu");
-			displayText.put("Shuffle Demo", "Shuffle Demo");
+			displayText.put("Stockpile Demo", "Stockpile Demo");
 //			displayText.put("Save", "Save");
 //			displayText.put("Load", "Load");
 			displayText.put("Exit", "Exit");			
@@ -192,10 +192,10 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			menuBar.add(FileMenu);
 			
 			menuOption[] fileOptions = new menuOption[] {
-//				new menuOption(displayText.get("New"), KeyEvent.VK_N),
+  			new menuOption(displayText.get("New"), KeyEvent.VK_N),
 //				new menuOption(displayText.get("Save"), KeyEvent.VK_S),
 //				new menuOption(displayText.get("Load"), KeyEvent.VK_L),
-				new menuOption(displayText.get("Shuffle Demo"), KeyEvent.VK_S),
+				new menuOption(displayText.get("Stockpile Demo"), KeyEvent.VK_S),
 				new menuOption(displayText.get("Exit"), KeyEvent.VK_X)
 			};
 			
@@ -248,7 +248,11 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				this.dispose();
 				return;
 			}
-			if(item.getText().equals(displayText.get("Shuffle Demo"))) {
+			if(item.getText().equals(displayText.get("New"))) {
+				reset();
+				return;
+			}
+			if(item.getText().equals(displayText.get("Stockpile Demo"))) {
 				resetShuffleDemo();
 				// HJ: Display all cards to show non-repetition.
 				for (Pile p: game.allPiles) {
@@ -301,14 +305,14 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				Pile p = (Pile)c.getParent();
 				
 				switch(p.type) {
-					case Draw:
+					case STOCK:
 						game.drawCard();
 					break;
-					case Normal:
+					case TABLEAU:
 						game.clickPile(p);
 					break;
-					case Get:
-						game.turnGetPile();
+					case TALON:
+						game.turnTalonPile();
 					break;
 				}	
 				repaint();
@@ -326,7 +330,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				
 				Pile p  = (Pile)c.getParent();
 				
-				if(p.cards.isEmpty() || p.type == PileType.Final) return;
+				if(p.cards.isEmpty() || p.type == PileType.FOUNDATION) return;
 				
 				tempPile = p.split(c);
 
@@ -352,8 +356,8 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				boolean match = false;
 				
 				// Check if pile can merge with the pile it is dropped on
-				ArrayList<Pile> droppable = new ArrayList<Pile>(game.piles);
-				droppable.addAll(game.finalPiles);
+				ArrayList<Pile> droppable = new ArrayList<Pile>(game.tableauPiles);
+				droppable.addAll(game.foundationPiles);
 				
 				for(Pile p: droppable) {
 					Point pilePos = p.getLocationOnScreen();

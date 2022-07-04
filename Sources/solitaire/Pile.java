@@ -20,8 +20,8 @@ public class Pile extends JLayeredPane {
 	Pile parent;
 	PileType type;
 	
-	// HJ: Normal = Tableau, Final = Foundation, Draw = Stock, Get = Talon.
-	enum PileType {Normal, Draw, Get, Final};
+	// HJ: Tableau = Tableau, Foundation = Foundation, Draw = Stock, Get = Talon.
+	enum PileType {TABLEAU, STOCK, TALON, FOUNDATION};
 	
 	/**
 	 * Class constructor
@@ -31,11 +31,11 @@ public class Pile extends JLayeredPane {
 		cards = new ArrayList<Card>();
 		this.width = width;
 		
-		// HJ: a 100 of spades is created for...?
+		// HJ: a 100 of spades is created for determining the "base" card - the bottom of each pile.
 		base = new Card(100, Suit.Spades);
 		add(base, 1, 0);
 		
-		type = PileType.Normal;
+		type = PileType.TABLEAU;
 	}
 	
 	
@@ -190,10 +190,10 @@ public class Pile extends JLayeredPane {
 		switch(type) {
 		
 			// If for tableau pile.
-			case Normal:
+			case TABLEAU:
 				// If it's empty it can only receive a King
 				if(cards.isEmpty()) {
-					if(newCard.value == 14) return true;
+					if(newCard.value == 13) return true;
 					return false;
 				}
 				
@@ -201,17 +201,15 @@ public class Pile extends JLayeredPane {
 				// HJ: if the top card is reversed in Tableau, then a new card can't be placed there.
 				if(topCard.isReversed) return false;
 				
-				// Different color, consecutive values, descending
-				// HJ: Below logic can become simplified if 11 is not skipped in card generation.
+				// Different colour, consecutive values, descending
 				if(topCard.suit.isRed != newCard.suit.isRed)
-				   if(topCard.value == newCard.value + 1 ||
-				      topCard.value ==  12 && newCard.value == 10) {
+				   if(topCard.value == newCard.value + 1) {
 					   return true;				
 				   }
 			break;
 			
 			// HJ: If for foundation pile.
-			case Final:
+			case FOUNDATION:
 				
 				// Merge with a single card	//HJ: only single cards can be sent at a time.
 				if(p.cards.size() > 1) return false;
@@ -222,13 +220,12 @@ public class Pile extends JLayeredPane {
 					return true;
 				}
 				
-				// Has to be the same color //HJ: more specifically, it has to be the same suit.
+				// Has to be the same colour //HJ: more specifically, it has to be the same suit.
 				if(suitFilter != newCard.suit) return false;
 				
 				// Consecutive values, ascending
 				topCard = cards.get(cards.size() - 1);
-				if(topCard.value == newCard.value - 1 ||
-				   topCard.value ==  10 && newCard.value == 12) {
+				if(topCard.value == newCard.value - 1) {
 					return true;
 				}
 			break;

@@ -28,11 +28,11 @@ import solitaire.Pile.PileType;
 public class Engine {
 	
 	// HJ: piles ArrayList below appear to be for the Tableau columns.
-	ArrayList<Pile> piles;
-	ArrayList<Pile> finalPiles;
-	Pile drawPile, getPile;
+	ArrayList<Pile> tableauPiles;
+	ArrayList<Pile> foundationPiles;
+	Pile stockPile, talonPile;
 	ArrayList<Pile> allPiles;
-	public final int pileNumber = 7;
+	public final int numberTableauPiles = 7;
 	public Deck deck;
 	
 	/**
@@ -50,21 +50,21 @@ public class Engine {
 		deck.shuffle();
 		
 		// HJ: Stockpile
-		drawPile = new Pile(120);
-		drawPile.setOffset(0);
+		stockPile = new Pile(120);
+		stockPile.setOffset(0);
 		
 		
 		// HJ: Talon pile
-		getPile = new Pile(180);
-		getPile.setOffset(0);
+		talonPile = new Pile(180);
+		talonPile.setOffset(0);
 		
 		// HJ: Foundation pile.
-		finalPiles = new ArrayList<Pile>();
-		piles = new ArrayList<Pile>();
+		foundationPiles = new ArrayList<Pile>();
+		tableauPiles = new ArrayList<Pile>();
 		
 		allPiles = new ArrayList<Pile>();
-		allPiles.add(drawPile);
-		allPiles.add(getPile);
+		allPiles.add(stockPile);
+		allPiles.add(talonPile);
 	}
 	
 	// HJ: For Shuffle Demo
@@ -73,21 +73,21 @@ public class Engine {
 		deck.shuffle();
 		
 		// HJ: Stockpile
-		drawPile = new Pile(120);
-		drawPile.setOffset(15);
+		stockPile = new Pile(120);
+		stockPile.setOffset(15);
 		
 		
 		// HJ: Talon pile
-		getPile = new Pile(180);
-		getPile.setOffset(15);
+		talonPile = new Pile(180);
+		talonPile.setOffset(15);
 		
 		// HJ: Foundation pile.
-		finalPiles = new ArrayList<Pile>();
-		piles = new ArrayList<Pile>();
+		foundationPiles = new ArrayList<Pile>();
+		tableauPiles = new ArrayList<Pile>();
 		
 		allPiles = new ArrayList<Pile>();
-		allPiles.add(drawPile);
-		allPiles.add(getPile);
+		allPiles.add(stockPile);
+		allPiles.add(talonPile);
 	}
 	
 	/**
@@ -95,10 +95,10 @@ public class Engine {
 	 */
 	public void setupGame() {
 		// Generate piles
-		drawPile.type = PileType.Draw;
-		getPile.type = PileType.Get;
+		stockPile.type = PileType.STOCK;
+		talonPile.type = PileType.TALON;
 
-		for(int i = 1; i <= pileNumber; ++i) {
+		for(int i = 1; i <= numberTableauPiles; ++i) {
 			Pile p = new Pile(120);
 			
 			// Add i cards to the current pile
@@ -112,7 +112,7 @@ public class Engine {
 					card.show();
 			}
 			
-			piles.add(p);
+			tableauPiles.add(p);
 			allPiles.add(p);
 		}
 		
@@ -120,8 +120,8 @@ public class Engine {
 		for(Suit suit : Suit.values()) {
 			Pile p = new Pile(100);
 			p.setOffset(0);
-			p.type = PileType.Final;
-			finalPiles.add(p);	
+			p.type = PileType.FOUNDATION;
+			foundationPiles.add(p);	
 			allPiles.add(p);
 		}
 		
@@ -129,23 +129,23 @@ public class Engine {
 		while(deck.size() > 0) {
 			Card card = deck.drawCard();
 			card.hide();
-			drawPile.addCard(card);
+			stockPile.addCard(card);
 		}
 	}
 	
 	/**
-	 * Draw a card from the draw pile and place it into the get pile
+	 * Draw a card from the Stock pile and place it into the Talon pile
 	 */
 	public void drawCard() {
-		if(!drawPile.cards.isEmpty()) {
-			Card drew = drawPile.drawCard();
+		if(!stockPile.cards.isEmpty()) {
+			Card drew = stockPile.drawCard();
 			drew.isReversed = false;
-			getPile.addCard(drew);			
+			talonPile.addCard(drew);			
 		}
 	}
 	
 	/**
-	 * When a normal pile is clicked, if the top card is reversed show it
+	 * When a Tableau pile is clicked, if the top card is reversed show it
 	 * @param {Pile} p
 	 */
 	public void clickPile(Pile p) {
@@ -158,16 +158,16 @@ public class Engine {
 	}
 	
 	/**
-	 * Reverse the Get pile and place it again for Draw
+	 * Reverse the Talon pile and place it again for drawing from Stockpile
 	 */
-	public void turnGetPile() {
-		if(!drawPile.cards.isEmpty()) return;
+	public void turnTalonPile() {
+		if(!stockPile.cards.isEmpty()) return;
 		
-		while(!getPile.cards.isEmpty()) {
-			Card c = getPile.drawCard();
+		while(!talonPile.cards.isEmpty()) {
+			Card c = talonPile.drawCard();
 			c.isReversed = true;
 			
-			drawPile.addCard(c);
+			stockPile.addCard(c);
 		}
 	}
 
@@ -177,7 +177,7 @@ public class Engine {
 	 */
 	//HJ: if pile size is 13 (that means all piles have kings)
 	public boolean checkWin() {
-		for(Pile p : finalPiles) {
+		for(Pile p : foundationPiles) {
 			if(p.cards.size() != 13)
 				return false;
 		}
@@ -185,74 +185,14 @@ public class Engine {
 	}
 
 	
+
 	/**
-	 * Save the game state to save.xml file
-	 */
-	// HJ: Delete this feature - unnecessary.
-//	public void save() {
-//		
-//		String saveString = "";
-//		
-//		try {
-//			DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-//			
-//			Document doc = docBuilder.newDocument();
-//			
-//			String newLine = System.getProperty( "line.separator" );
-//
-//			Element game =  doc.createElement("game");
-//			doc.appendChild(game);
-//			
-//			// This is from previous implementation, save each pile in a new line
-//			for(Pile p : piles)
-//				saveString += p.toString() + newLine;
-//			for(Pile p: finalPiles)
-//				saveString += p.toString() + newLine;
-//			saveString += drawPile.toString() + newLine;
-//			saveString += getPile.toString() + newLine;
-//
-//			String[] lines = saveString.split(newLine);
-//			
-//			for(String pile : lines) {
-//				Element p = doc.createElement("pile");
-//				
-//				String cardStrings[] = pile.split("-");
-//				for(String c: cardStrings) {
-//					String parts[] = c.split(" of ");
-//					
-//					Element cardE = doc.createElement("card");
-//					cardE.setAttribute("value", parts[0]);
-//					cardE.setAttribute("suit", parts[1]);
-//					cardE.setAttribute("isReversed", parts[2]);
-//					
-//					p.appendChild(cardE);
-//				}
-//				
-//				game.appendChild(p);
-//			}
-//				
-//			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-//			DOMSource src = new DOMSource(doc);
-//			StreamResult res = new StreamResult(new File("save.xml"));
-//			
-//			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-//			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-//			transformer.transform(src, res);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//       
-//	}
-//
-	
-	/**
-	 * Load the game state from save.xml file
+	 * Load the game state from internal configuration
 	 */
 	public void load() {
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
-//			Document dom = db.parse("save.xml"); //HJ: Let's internalize the initial load file.
 			
 			String cardSetup = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
 					+ "<game>\n"
@@ -404,22 +344,22 @@ public class Engine {
 							}
 
 							// Add the cards to the correct pile
-							if (currentPileCount < pileNumber) {
-								piles.get(currentPileCount).merge(tempPile);
-							} else if (currentPileCount < pileNumber + 4) {
-								finalPiles.get(currentPileCount - pileNumber)
+							if (currentPileCount < numberTableauPiles) {
+								tableauPiles.get(currentPileCount).merge(tempPile);
+							} else if (currentPileCount < numberTableauPiles + 4) {
+								foundationPiles.get(currentPileCount - numberTableauPiles)
 										.merge(tempPile);
 
 								if (!tempPile.isEmpty()) {
-									// Set the pile filter for final piles
+									// Set the pile filter for foundation piles
 									Card c = tempPile.peekTopCard();
-									finalPiles.get(currentPileCount
-											- pileNumber).suitFilter = c.suit;
+									foundationPiles.get(currentPileCount
+											- numberTableauPiles).suitFilter = c.suit;
 								}
-							} else if (currentPileCount == pileNumber + 4) {
-								drawPile.merge(tempPile);
+							} else if (currentPileCount == numberTableauPiles + 4) {
+								stockPile.merge(tempPile);
 							} else {
-								getPile.merge(tempPile);
+								talonPile.merge(tempPile);
 							}
 						}
 						currentPileCount++;
