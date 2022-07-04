@@ -189,60 +189,60 @@ public class Engine {
 	 * Save the game state to save.xml file
 	 */
 	// HJ: Delete this feature - unnecessary.
-	public void save() {
-		
-		String saveString = "";
-		
-		try {
-			DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			
-			Document doc = docBuilder.newDocument();
-			
-			String newLine = System.getProperty( "line.separator" );
-
-			Element game =  doc.createElement("game");
-			doc.appendChild(game);
-			
-			// This is from previous implementation, save each pile in a new line
-			for(Pile p : tableauPiles)
-				saveString += p.toString() + newLine;
-			for(Pile p: foundationPiles)
-				saveString += p.toString() + newLine;
-			saveString += stockPile.toString() + newLine;
-			saveString += talonPile.toString() + newLine;
-
-			String[] lines = saveString.split(newLine);
-			
-			for(String pile : lines) {
-				Element p = doc.createElement("pile");
-				
-				String cardStrings[] = pile.split("-");
-				for(String c: cardStrings) {
-					String parts[] = c.split(" of ");
-					
-					Element cardE = doc.createElement("card");
-					cardE.setAttribute("value", parts[0]);
-					cardE.setAttribute("suit", parts[1]);
-					cardE.setAttribute("isReversed", parts[2]);
-					
-					p.appendChild(cardE);
-				}
-				
-				game.appendChild(p);
-			}
-				
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			DOMSource src = new DOMSource(doc);
-			StreamResult res = new StreamResult(new File("save.xml"));
-			
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-			transformer.transform(src, res);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-       
-	}
+//	public void save() {
+//		
+//		String saveString = "";
+//		
+//		try {
+//			DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+//			
+//			Document doc = docBuilder.newDocument();
+//			
+//			String newLine = System.getProperty( "line.separator" );
+//
+//			Element game =  doc.createElement("game");
+//			doc.appendChild(game);
+//			
+//			// This is from previous implementation, save each pile in a new line
+//			for(Pile p : tableauPiles)
+//				saveString += p.toString() + newLine;
+//			for(Pile p: foundationPiles)
+//				saveString += p.toString() + newLine;
+//			saveString += stockPile.toString() + newLine;
+//			saveString += talonPile.toString() + newLine;
+//
+//			String[] lines = saveString.split(newLine);
+//			
+//			for(String pile : lines) {
+//				Element p = doc.createElement("pile");
+//				
+//				String cardStrings[] = pile.split("-");
+//				for(String c: cardStrings) {
+//					String parts[] = c.split(" of ");
+//					
+//					Element cardE = doc.createElement("card");
+//					cardE.setAttribute("value", parts[0]);
+//					cardE.setAttribute("suit", parts[1]);
+//					cardE.setAttribute("isReversed", parts[2]);
+//					
+//					p.appendChild(cardE);
+//				}
+//				
+//				game.appendChild(p);
+//			}
+//				
+//			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+//			DOMSource src = new DOMSource(doc);
+//			StreamResult res = new StreamResult(new File("save.xml"));
+//			
+//			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+//			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+//			transformer.transform(src, res);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//       
+//	}
 //
 	
 	/**
