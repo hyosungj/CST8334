@@ -174,7 +174,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 //			displayText.put("File", "File");
      		displayText.put("New", "New");
 			displayText.put("Menu", "Menu");
-//			displayText.put("Shuffle Demo", "Shuffle Demo");
+			displayText.put("Stockpile Demo", "Stockpile Demo");
 //			displayText.put("Save", "Save");
 //			displayText.put("Load", "Load");
 			displayText.put("Exit", "Exit");			
@@ -195,7 +195,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
   			new menuOption(displayText.get("New"), KeyEvent.VK_N),
 //				new menuOption(displayText.get("Save"), KeyEvent.VK_S),
 //				new menuOption(displayText.get("Load"), KeyEvent.VK_L),
-//				new menuOption(displayText.get("Shuffle Demo"), KeyEvent.VK_S),
+				new menuOption(displayText.get("Stockpile Demo"), KeyEvent.VK_S),
 				new menuOption(displayText.get("Exit"), KeyEvent.VK_X)
 			};
 			
@@ -252,22 +252,22 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				reset();
 				return;
 			}
-//			if(item.getText().equals(displayText.get("Shuffle Demo"))) {
-//				resetShuffleDemo();
-//				// HJ: Display all cards to show non-repetition.
-//				for (Pile p: game.allPiles) {
-//					
-//						for (Card card: p.cards) {
-//							if (card.value != 100) {
-//								// HJ: Show all cards face up.
-//								card.show();
-//							}
-//						}
-//					
-//				}
-//				
-//				return;
-//			}
+			if(item.getText().equals(displayText.get("Stockpile Demo"))) {
+				resetShuffleDemo();
+				// HJ: Display all cards to show non-repetition.
+				for (Pile p: game.allPiles) {
+					
+						for (Card card: p.cards) {
+							if (card.value != 100) {
+								// HJ: Show all cards face up.
+								card.show();
+							}
+						}
+					
+				}
+				
+				return;
+			}
 //			if(item.getText().equals(displayText.get("Save"))) {
 //				game.save();
 //				JOptionPane.showMessageDialog(this, "Game saved!");
