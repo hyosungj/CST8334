@@ -276,7 +276,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			if(item.getText().equals(displayText.get("Contact Developers"))) {
 				//HJ: Load up email address with a desktop app.
 				Desktop desktop = Desktop.getDesktop(); 
-				String message = "mailto:help@ACSolitaireCST8334G2.ca?subject=User%20Help";
+				String message = "mailto:help@ACSolitaireCST8334Group2.ca?subject=User%20Help";
 				URI uri = URI.create(message);
 				try {
 					desktop.mail(uri);
