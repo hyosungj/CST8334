@@ -320,22 +320,53 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if(e.getComponent() instanceof Card) {
+			//HJ Double click logic:
+			if (e.getClickCount() == 2 && !e.isConsumed() 
+					&& e.getComponent() instanceof Card) {
 				Card c = (Card)e.getComponent();
 				Pile p = (Pile)c.getParent();
 				
-				switch(p.type) {
-					case STOCK:
-						game.drawCard();
-					break;
+				// if front facing:
+				if (!c.isReversed) 
+					switch(p.type) {
 					case TABLEAU:
-						game.clickPile(p);
-					break;
+//						JOptionPane.showMessageDialog(this, "Tableau card!");
+						// If foundation target doesn't exist, then check other tableau pile
+						if (!game.checkFoundationTarget(p,c)) {
+							game.checkPeerTableauTarget(p, c);
+						}
+						
+						break;
 					case TALON:
-						game.turnTalonPile();
-					break;
-				}	
-				repaint();
+//						JOptionPane.showMessageDialog(this, "Talon card!");
+						if (!game.checkFoundationTarget(p,c)) {
+							game.checkTableauTarget(p, c);
+						}
+						break;
+					}
+					
+					
+			     e.consume();		
+			} else {
+			
+				//HJ: Single click logic
+				if(e.getComponent() instanceof Card) {
+					Card c = (Card)e.getComponent();
+					Pile p = (Pile)c.getParent();
+					
+					switch(p.type) {
+						case STOCK:
+							game.drawCard();
+						break;
+						case TABLEAU:
+							game.clickPile(p);
+						break;
+						case TALON:
+							game.turnTalonPile();
+						break;
+					}	
+					repaint();
+				}
 			}
 		}
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.StringReader; // HJ: StringReader imported.
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -170,7 +171,97 @@ public class Engine {
 			stockPile.addCard(c);
 		}
 	}
+	
+	/**
+	 * Check whether a card can be placed on any of the Foundation piles
+	 * @param {Pile} priginPile
+	 * @param {Card} originCard
+	 * @return {Boolean}
+	 */
+	public boolean checkFoundationTarget(Pile originPile, Card originCard) {
+		String ocSuit = originCard.suit.name();
+		int ocValue = originCard.value;
+		Card targetCard;
+	
+		if (ocValue==1) {
+			for (Pile targetPile : foundationPiles) {
+				// If suit doesn't exist, then add card
+				if (targetPile.isEmpty()) {
 
+					//JOptionPane.showMessageDialog(null, "Ace found!");
+					originPile.removeCard(originCard);
+					targetPile.addCard(originCard);
+					return true;	
+				}
+			}
+			
+		} else {
+			// Otherwise, search for a suit and value match and move card.
+			for (Pile targetPile : foundationPiles) {
+
+				if ((targetCard = targetPile.searchCard(ocValue-1, ocSuit)) != null) {
+					
+					// JOptionPane.showMessageDialog(null, "Match found!");
+					originPile.removeCard(originCard);
+					targetPile.addCard(originCard);
+					return true;
+				}
+			}
+			
+		}
+		// If all else fails, return false
+		return false;
+	}
+	
+	/**
+	 * Check whether a card can be placed on any of the Tableau piles
+	 * @return {Boolean}
+	 */
+	public boolean checkTableauTarget(Pile originPile, Card originCard) {
+		
+		for (Pile targetPile : tableauPiles) {
+
+			if (targetPile.acceptsCard(originCard)) {
+						
+//				JOptionPane.showMessageDialog(null, "Tableau Match found!");
+				originPile.removeCard(originCard);
+				targetPile.addCard(originCard);
+				return true;
+	
+			}
+			
+		}
+		// if all else fails, return false
+		return false;
+		
+	}
+	
+	/**
+	 * Check whether a tableau pile can be placed on any of the Tableau piles
+	 * @return {Boolean}
+	 */
+	public boolean checkPeerTableauTarget(Pile originPile, Card originCard) {
+		
+		for (Pile targetPile : tableauPiles) {
+
+			if (targetPile.acceptsCard(originCard)) {
+						
+//				JOptionPane.showMessageDialog(null, "Tableau Match found!");
+				for (Card c: originPile.split(originCard).cards) {
+					originPile.removeCard(c);
+					targetPile.addCard(c);
+				}
+				return true;
+	
+			}
+			
+		}
+		// if all else fails, return false
+		return false;
+		
+	}
+	
+	
 	/**
 	 * Tests whether all the cards have been placed in the correct pile
 	 * @return {Boolean}
