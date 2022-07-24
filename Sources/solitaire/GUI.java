@@ -282,7 +282,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 					desktop.mail(uri);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(this, "Didn't work");
+					JOptionPane.showMessageDialog(this, "Could not launch email application");
 					e1.printStackTrace();
 				}
 
