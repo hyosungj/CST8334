@@ -366,15 +366,10 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 								
 								if (!game.checkFoundationTarget(p,c)) {
 									if(!game.checkTableauTarget(p, c)){
-										
-									} else {
-										game.turnTalonPile();
+										game.turnTalonPile();										
 									}
 								}
 							}
-							
-							game.turnTalonPile();
-
 						break;
 					}	
 					repaint();
