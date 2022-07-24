@@ -1,6 +1,7 @@
 package solitaire;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
@@ -14,6 +15,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +63,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			
 			
 			// Window settings
-			setTitle("CST8322 Group 2 Assignment 2 Release 1");
+			setTitle("CST8322 Group 2 Assignment 3 Release 2");
 //			setSize(900, 700);
 			setSize(900, 1000);
 			
@@ -174,7 +177,8 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 //			displayText.put("File", "File");
      		displayText.put("New", "New");
 			displayText.put("Menu", "Menu");
-			displayText.put("Stockpile Demo", "Stockpile Demo");
+//			displayText.put("Stockpile Demo", "Stockpile Demo");
+			displayText.put("Contact Developers", "Contact Developers");
 //			displayText.put("Save", "Save");
 //			displayText.put("Load", "Load");
 			displayText.put("Exit", "Exit");			
@@ -195,7 +199,8 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
   			new menuOption(displayText.get("New"), KeyEvent.VK_N),
 //				new menuOption(displayText.get("Save"), KeyEvent.VK_S),
 //				new menuOption(displayText.get("Load"), KeyEvent.VK_L),
-				new menuOption(displayText.get("Stockpile Demo"), KeyEvent.VK_S),
+//				new menuOption(displayText.get("Stockpile Demo"), KeyEvent.VK_S),
+				new menuOption(displayText.get("Contact Developers"), KeyEvent.VK_C),
 				new menuOption(displayText.get("Exit"), KeyEvent.VK_X)
 			};
 			
@@ -252,20 +257,35 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				reset();
 				return;
 			}
-			if(item.getText().equals(displayText.get("Stockpile Demo"))) {
-				resetShuffleDemo();
-				// HJ: Display all cards to show non-repetition.
-				for (Pile p: game.allPiles) {
-					
-						for (Card card: p.cards) {
-							if (card.value != 100) {
-								// HJ: Show all cards face up.
-								card.show();
-							}
-						}
-					
+//			if(item.getText().equals(displayText.get("Stockpile Demo"))) {
+//				resetShuffleDemo();
+//				// HJ: Display all cards to show non-repetition.
+//				for (Pile p: game.allPiles) {
+//					
+//						for (Card card: p.cards) {
+//							if (card.value != 100) {
+//								// HJ: Show all cards face up.
+//								card.show();
+//							}
+//						}
+//					
+//				}
+//				
+//				return;
+//			}
+			if(item.getText().equals(displayText.get("Contact Developers"))) {
+				//HJ: Load up email address with a desktop app.
+				Desktop desktop = Desktop.getDesktop(); 
+				String message = "mailto:help@ACSolitaireCST8334Group2.ca?subject=User%20Help";
+				URI uri = URI.create(message);
+				try {
+					desktop.mail(uri);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(this, "Could not launch email application");
+					e1.printStackTrace();
 				}
-				
+
 				return;
 			}
 //			if(item.getText().equals(displayText.get("Save"))) {
@@ -300,22 +320,60 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if(e.getComponent() instanceof Card) {
+			//HJ Double click logic:
+			if (e.getClickCount() == 2 && !e.isConsumed() 
+					&& e.getComponent() instanceof Card) {
 				Card c = (Card)e.getComponent();
 				Pile p = (Pile)c.getParent();
 				
-				switch(p.type) {
-					case STOCK:
-						game.drawCard();
-					break;
+				// if front facing:
+				if (!c.isReversed) 
+					switch(p.type) {
 					case TABLEAU:
-						game.clickPile(p);
-					break;
+//						JOptionPane.showMessageDialog(this, "Tableau card!");
+						// If foundation target doesn't exist, then check other tableau pile
+						if (!game.checkFoundationTarget(p,c)) {
+							game.checkPeerTableauTarget(p, c);
+						}
+						
+						break;
 					case TALON:
-						game.turnTalonPile();
-					break;
-				}	
-				repaint();
+//						JOptionPane.showMessageDialog(this, "Talon card!");
+						if (!game.checkFoundationTarget(p,c)) {
+							game.checkTableauTarget(p, c);
+						}
+						break;
+					}
+					
+					
+			     e.consume();		
+			} else {
+			
+				//HJ: Single click logic
+				if(e.getComponent() instanceof Card) {
+					Card c = (Card)e.getComponent();
+					Pile p = (Pile)c.getParent();
+					
+					switch(p.type) {
+						case STOCK:
+							game.drawCard();
+						break;
+						case TABLEAU:
+							game.clickPile(p);
+						break;
+						case TALON:
+							if (game.stockPile.isEmpty()) {
+								
+								if (!game.checkFoundationTarget(p,c)) {
+									if(!game.checkTableauTarget(p, c)){
+										game.turnTalonPile();										
+									}
+								}
+							}
+						break;
+					}	
+					repaint();
+				}
 			}
 		}
 

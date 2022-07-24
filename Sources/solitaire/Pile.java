@@ -233,6 +233,59 @@ public class Pile extends JLayeredPane {
 		return false;
 	}
 	
+	/**
+	 * Solitaire conditions to check if a specific move is valid for a autoCheck
+	 */
+	public boolean acceptsCard(Card c) {
+		// Can not add to itself
+		if(this == (Pile) c.getParent()) return false;
+		
+		Card newCard = c;
+		Card topCard;
+		
+		switch(type) {
+		
+			// If for tableau pile.
+			case TABLEAU:
+				// If it's empty it can only receive a King
+				if(cards.isEmpty()) {
+					if(newCard.value == 13) return true;
+					return false;
+				}
+				
+				topCard = cards.get(cards.size() - 1);
+				// HJ: if the top card is reversed in Tableau, then a new card can't be placed there.
+				if(topCard.isReversed) return false;
+				
+				// Different colour, consecutive values, descending
+				if(topCard.suit.isRed != newCard.suit.isRed)
+				   if(topCard.value == newCard.value + 1) {
+					   return true;				
+				   }
+			break;
+			
+			// HJ: If for foundation pile.
+			case FOUNDATION:
+				
+				// Start with an ace
+				if(cards.isEmpty() && newCard.value == 1) {
+					suitFilter = newCard.suit;
+					return true;
+				}
+				
+				// Has to be the same colour //HJ: more specifically, it has to be the same suit.
+				if(suitFilter != newCard.suit) return false;
+				
+				// Consecutive values, ascending
+				topCard = cards.get(cards.size() - 1);
+				if(topCard.value == newCard.value - 1) {
+					return true;
+				}
+			break;
+		}
+		return false;
+	}
+	
 	public boolean isOptimizedDrawingEnabled() {
         return false;
 	}
