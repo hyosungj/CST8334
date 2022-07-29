@@ -10,11 +10,6 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-/**
- * Card class to store the information of single card
- * @member {Suit} suit The suit of the card (Spades,Hearts,Diamonds,Clubs)
- * @member {Integer} value The value of the card (1->13)
- */
 public class Card extends JPanel{
 		// Members
 		public int value;
@@ -24,29 +19,23 @@ public class Card extends JPanel{
 		boolean isReversed;
 		Point positionOffset;
 		
-		/**
-		 * Enum to store the suit values
-		 */
 		public enum Suit {
 			Spades(1, false),
 			Hearts(2, true),
 			Diamonds(3, true),
 			Clubs(4, false);
 			
-			// HJ: below value int is could be confounded with the card value instead of the suitValue = refactor.
-			public int value;
+			// Note below is suit value, (as seen above, not card value)
+			public int suitValue;
 			public boolean isRed;
 			
-			private Suit(int value, boolean isRed) {
-				this.value = value;
+			private Suit(int suitValue, boolean isRed) {
+				this.suitValue = suitValue;
 				this.isRed = isRed;
 			}
 		};
 		
-		/**
-		 * Converts the value of the card to a string
-		 * @param {Integer} value The value of the card 
-		 */
+		// Conversion, to read card images from file.
 		public static String valueString(int value) {
 								
 			if(value == 11) return "J";
@@ -58,42 +47,12 @@ public class Card extends JPanel{
 			return Integer.toString(value);
 		}
 
-		/**
-		 * Converts the value of the card to a int
-		 * @param {String} value The value of the card 
-		 */
-		public static int valueInt(String value) {
-			
-			if(value.equals("J")) return 11;
-			if(value.equals("Q")) return 12;
-			if(value.equals("K")) return 13;
-			if(value.equals("A")) return 1;
-			
-			return Integer.parseInt(value);
-		}
-		/**
-		 * toString method, eg: "K of Diamonds"
-		 * @return {String} Description of the current card
-		 */
+		// To read card images from file
+		// TODO: perhaps by renaming our card images, we may be able to write more efficient card image finding code.
 		public String toString() {
-			// HJ: Consider using .toString() instead of .name() to retrieve the name of the suit enum constant (wondering if .name() was used because lower case names are needed?).
 			return valueString(value) + " of " + suit.name();
 		}
-		
-		/**
-		 * Returns a string that can be used to re-initialize the card
-		 * @return {String} Class properties, " of " separated.
-		 */
-		// HJ: Below likely only needed for xml file generation. delete potentially.
-		public String saveAsString() {
-			return valueString(value) + " of " + suit.name() + " of " + isReversed;
-		}
-		
-		/**
-		 * Class constructor
-		 * @param {Integer} value The value of the card, in [1,13]
-		 * @param {Suit} suit The suit of the card
-		 */
+			
 		public Card(int value, Suit suit) {
 			this.value = value;
 			this.suit = suit;		
@@ -119,16 +78,12 @@ public class Card extends JPanel{
 			setOpaque(false);
 		}
 		
-		/**
-		 * Turns the card with the back up
-		 */
+		// Card Face Down
 		public void hide() {
 			isReversed = true;
 		}
 		
-		/**
-		 * Turns the card with the face up
-		 */
+		// Card Face Up
 		public void show() {
 			isReversed = false;
 		}

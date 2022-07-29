@@ -2,15 +2,13 @@ package solitaire;
 
 public class Game {
 
-	// HJ: It's confusing why the engine is named game here - perhaps it'd be good to refactor this variable.
-	Engine game;
+	Engine engine;
 	GUI gui;
 	
 	public Game() {
-		game = new Engine();
-		gui = new GUI(game);
-		// HJ: Load initial setup
-		game.load();
+		engine = new Engine();
+		gui = new GUI(engine);
+
 	}
 	
 	public static void main(String[] args) {

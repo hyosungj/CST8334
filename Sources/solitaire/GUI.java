@@ -16,7 +16,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,9 +51,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 		Pile tempPile;
 		Point mouseOffset;
 		
-		/**
-		 * GUI class constructor
-		 */
+
 		public GUI (Engine game) {			
 			this.game = game;
 			
@@ -64,7 +61,6 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			
 			// Window settings
 			setTitle("CST8322 Group 2 Assignment 3 Release 2");
-//			setSize(900, 700);
 			setSize(900, 1000);
 			
 			try {
@@ -99,7 +95,6 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			columns.setMinimumSize(new Dimension(200, 900));
 			
 			// Add the top columns panel
-//			FlowLayout topFlow = new FlowLayout(FlowLayout.LEFT);
 			FlowLayout topFlow = new FlowLayout(FlowLayout.CENTER);
 			topFlow.setAlignOnBaseline(true);
 			
@@ -111,22 +106,19 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			gameArea.add(topColumns);
 			gameArea.add(columns);
 			
-			//layers.add(dragLayer, JLayeredPane.DRAG_LAYER);
 			add(gameArea);
 			
 			// Display the window
 			lp = getLayeredPane();
 			setVisible(true);
 			
-			// Auxiliarry elements
+			// Auxiliary elements
 			mouseOffset = new Point(0, 0);
 			
 			initialize();
 		}
 		
-		/**
-		 * Add cards from the game to the GUI
-		 */
+		// Add cards from the game to the GUI
 		private void initialize() {
 			topColumns.removeAll();
 			columns.removeAll();
@@ -152,42 +144,24 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			validate();
 		}
 		
-		/**
-		 * Resets the whole game
-		 */
+		// Resets the whole game
 		public void reset() {
 			game.resetCards();
 			initialize();
 			repaint();
 		}
 		
-		public void resetShuffleDemo() {
-			game.resetCardsShuffleDemo();
-			initialize();
-			repaint();
-		}
-		
-		/**
-		 * Creates the displayText map
-		 * Change this if you want to translate the game into another language
-		 */
+//		Creates the displayText map
 		private void createTextMap() {
 			displayText = new HashMap<String, String>();
 			
-//			displayText.put("File", "File");
      		displayText.put("New", "New");
 			displayText.put("Menu", "Menu");
-//			displayText.put("Stockpile Demo", "Stockpile Demo");
 			displayText.put("Contact Developers", "Contact Developers");
-//			displayText.put("Save", "Save");
-//			displayText.put("Load", "Load");
 			displayText.put("Exit", "Exit");			
 		}
 		
-		/**
-		 * Create the top menu bar
-		 */
-		// HJ: VK_ below is for ALT+ actions.
+		// For top menu bar, VK_ below is for ALT+ actions.
 		private void createTopMenu() {
 			menuBar = new JMenuBar();
 			
@@ -197,9 +171,6 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			
 			menuOption[] fileOptions = new menuOption[] {
   			new menuOption(displayText.get("New"), KeyEvent.VK_N),
-//				new menuOption(displayText.get("Save"), KeyEvent.VK_S),
-//				new menuOption(displayText.get("Load"), KeyEvent.VK_L),
-//				new menuOption(displayText.get("Stockpile Demo"), KeyEvent.VK_S),
 				new menuOption(displayText.get("Contact Developers"), KeyEvent.VK_C),
 				new menuOption(displayText.get("Exit"), KeyEvent.VK_X)
 			};
@@ -217,11 +188,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			setJMenuBar(menuBar);
 		}
 		
-		/**
-		 * Auxiliary class which stores information about a single menu option
-		 * @member {String} name The name of the
-		 * @member {Integer} shortcut The mnemonic for this button 
-		 */
+		// Auxiliary class which stores information about a single menu option
 		class menuOption {
 			public String name;
 			public Integer shorcut = 0;
@@ -232,9 +199,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			}
 		}
 		
-		/**
-		 * Function to handle most of the events performed on the GUI
-		 */
+		// Function to handle most of the events performed on the GUI
 		public void actionPerformed(ActionEvent e) {
 			
 			// Handle all menu interactions
@@ -242,10 +207,8 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			
 		}
 		
-		/**
-		 * Handles the activation of any of the menu bar buttons
-		 * @param {ActionEvent} e
-		 */
+		//Handles the activation of any of the menu bar buttons
+
 		private void handleMenuInteraction(ActionEvent e) {
 			JMenuItem item = (JMenuItem)e.getSource();
 			
@@ -257,47 +220,23 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				reset();
 				return;
 			}
-//			if(item.getText().equals(displayText.get("Stockpile Demo"))) {
-//				resetShuffleDemo();
-//				// HJ: Display all cards to show non-repetition.
-//				for (Pile p: game.allPiles) {
-//					
-//						for (Card card: p.cards) {
-//							if (card.value != 100) {
-//								// HJ: Show all cards face up.
-//								card.show();
-//							}
-//						}
-//					
-//				}
-//				
-//				return;
-//			}
+
 			if(item.getText().equals(displayText.get("Contact Developers"))) {
-				//HJ: Load up email address with a desktop app.
+				//Load up email address with a desktop app.
 				Desktop desktop = Desktop.getDesktop(); 
 				String message = "mailto:help@ACSolitaireCST8334Group2.ca?subject=User%20Help";
 				URI uri = URI.create(message);
 				try {
 					desktop.mail(uri);
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
+					
 					JOptionPane.showMessageDialog(this, "Could not launch email application");
 					e1.printStackTrace();
 				}
 
 				return;
 			}
-//			if(item.getText().equals(displayText.get("Save"))) {
-//				game.save();
-//				JOptionPane.showMessageDialog(this, "Game saved!");
-//				return;
-//			}
-			if(item.getText().equals(displayText.get("Load"))) {
-				game.load();
-				validate();
-				return;
-			}
+
 		}
 
 		@Override
@@ -451,9 +390,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 		public class JPanelWithBackground extends JPanel {
 			  private Image backgroundImage;
 
-			  // Some code to initialize the background image.
-			  // Here, we use the constructor to load the image. This
-			  // can vary depending on the use case of the panel.
+			  // Initialize the background image.
 			  public JPanelWithBackground(String fileName) throws IOException {
 				URL urlToImage = this.getClass().getResource(fileName);
 			  	backgroundImage = ImageIO.read(urlToImage);

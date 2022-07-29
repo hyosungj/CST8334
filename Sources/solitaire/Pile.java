@@ -2,7 +2,6 @@ package solitaire;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.swing.JLayeredPane;
@@ -13,38 +12,29 @@ public class Pile extends JLayeredPane {
 
 	Card base;
 	ArrayList<Card> cards;
-	// HJ: offset below describes the vertical distance before a new card is stacked on top.
+	// Offset below describes the vertical distance before a new card is stacked on top.
 	int offset = 15;
 	Suit suitFilter;
 	int width;
 	Pile parent;
 	PileType type;
 	
-	// HJ: Tableau = Tableau, Foundation = Foundation, Draw = Stock, Get = Talon.
 	enum PileType {TABLEAU, STOCK, TALON, FOUNDATION};
 	
-	/**
-	 * Class constructor
-	 * @param width
-	 */
+
 	public Pile(int width) {
 		cards = new ArrayList<Card>();
 		this.width = width;
 		
-		// HJ: a 100 of spades is created for determining the "base" card - the bottom of each pile.
+		// Note: a 100 of spades is created for determining the "base" card - the black bottom of each pile.
 		base = new Card(100, Suit.Spades);
 		add(base, 1, 0);
 		
 		type = PileType.TABLEAU;
 	}
 	
-	
-	
-	/**
-	 * Adds a new card to the top of the pile.
-	 * No checking is done, card is always added
-	 * @param {Card} c The card to be added
-	 */
+	// Adds a new card to the top of the pile.
+
 	public void addCard(Card c) {
 		c.setLocation(0, offset * cards.size());
 		cards.add(c);
@@ -53,11 +43,7 @@ public class Pile extends JLayeredPane {
 		updateSize();
 	}
 	
-	/**
-	 * Removes a card from the pile
-	 * No checking is done, card is always remove
-	 * @param {Card} c The card to be removed
-	 */
+	 // Removes a card from the pile
 	public void removeCard(Card c) {
 		cards.remove(c);
 		this.remove(c);
@@ -65,18 +51,13 @@ public class Pile extends JLayeredPane {
 		updateSize();
 	}
 	
-	/**
-	 * Returns the first card of the pile, without removing it
-	 * @return {Card}
-	 */
+
+	// Return first card of the pile, without removing it
 	public Card peekTopCard() {
 		return cards.get(cards.size() - 1);
 	}
 	
-	/**
-	 * Draws a card from the pile. Pack must not be empty.
-	 * @return First card in pack
-	 */
+	// Draws card from a pile.
 	public Card drawCard() {
 		Card c = cards.get(0);
 		removeCard(c);
@@ -84,18 +65,14 @@ public class Pile extends JLayeredPane {
 		return c;
 	}
 	
-	/**
-	 * Sets the width of the pile column.
-	 * This is mostyl used for adding padding.
-	 */
+	// Set pile width (for visual "padding" between columns).
 	public void setWidth(int width) {
 		this.width = width;
 		updateSize();		
 	}
 	
-	/**
-	 * Updates pile size based on the number of cards in it
-	 */
+
+	// Updates pile size based on the number of cards in it
 	public void updateSize() {
 		int height = base.getSize().height;
 		
@@ -108,27 +85,20 @@ public class Pile extends JLayeredPane {
 	}
 	
 	
-	/**
-	 * Changes the offset of the pile
-	 * @param {Integer} offset
-	 */
+	// Changes the offset of the pile
 	public void setOffset(int offset) {
 		this.offset = offset;
 		updateSize();
 	}
 	
-	/**
-	 * Breaks the pile into two piles
-	 * The top half is kept in this pile
-	 * @param {Card} first The card where the break starts
-	 * @return
-	 */
+
+	// Splits pile, bottom half (starting at Card first) sticks to the mouse for transfer during drag.
 	public Pile split(Card first) {
 		Pile p = new Pile(100);
 		
 		for(int i = 0; i < cards.size(); ++i) {
 			if(cards.get(i) == first) {
-				// HJ: Below for loop just separates selected card as a separate child pile. for loop is unnecessary.
+				// TODO: Below for loop just separates selected card as a separate child pile. for loop is unnecessary.
 				for(; i < cards.size();) {
 					p.addCard(cards.get(i));
 					removeCard(cards.get(i));
@@ -140,12 +110,8 @@ public class Pile extends JLayeredPane {
 		
 		return p;
 	}
-	
-	/**
-	 * Merge the current pile with the given pile
-	 * The given pile is placed on top
-	 * @param {Pile} p The pile to merge with
-	 */
+
+	// add input pile on top of existing pile.
 	public void merge(Pile p) {
 		for(Card c: p.cards)
 			addCard(c);
@@ -153,12 +119,8 @@ public class Pile extends JLayeredPane {
 		updateSize();
 	}
 	
-	/**
-	 * Searches for a card in the pack based on value and suit name.
-	 * @param {int} value
-	 * @param {String} suitName
-	 * @return {Card} The found card
-	 */
+
+	// search card based on value and suitName
 	public Card searchCard(int value, String suitName) {
 		
 		for(Card c: cards) {
@@ -169,17 +131,12 @@ public class Pile extends JLayeredPane {
 		return null;
 	}
 	
-	/**
-	 * Checks wether the pile is empty or not
-	 * @return {Boolean} True if the pile is empty
-	 */
+	// check if pile has no cards.
 	public boolean isEmpty() {
 		return cards.size() == 0;
 	}
 	
-	/**
-	 * Solitaire conditions to check if a move is valid
-	 */
+	// See if solitaire card move logic is acceptable.
 	public boolean acceptsPile(Pile p) {
 		// Can not add to itself
 		if(this == p) return false;
@@ -189,7 +146,6 @@ public class Pile extends JLayeredPane {
 		
 		switch(type) {
 		
-			// If for tableau pile.
 			case TABLEAU:
 				// If it's empty it can only receive a King
 				if(cards.isEmpty()) {
@@ -198,7 +154,7 @@ public class Pile extends JLayeredPane {
 				}
 				
 				topCard = cards.get(cards.size() - 1);
-				// HJ: if the top card is reversed in Tableau, then a new card can't be placed there.
+				// if the top card is reversed in Tableau, then a new card can't be placed there.
 				if(topCard.isReversed) return false;
 				
 				// Different colour, consecutive values, descending
@@ -208,19 +164,18 @@ public class Pile extends JLayeredPane {
 				   }
 			break;
 			
-			// HJ: If for foundation pile.
 			case FOUNDATION:
 				
-				// Merge with a single card	//HJ: only single cards can be sent at a time.
+				// Merge with a single card, only single cards can be sent at a time.
 				if(p.cards.size() > 1) return false;
 				
-				// Start with an ace
+				// Accept starting with Ace
 				if(cards.isEmpty() && newCard.value == 1) {
 					suitFilter = newCard.suit;
 					return true;
 				}
 				
-				// Has to be the same colour //HJ: more specifically, it has to be the same suit.
+				// It has to be the same suit.
 				if(suitFilter != newCard.suit) return false;
 				
 				// Consecutive values, ascending
@@ -233,9 +188,7 @@ public class Pile extends JLayeredPane {
 		return false;
 	}
 	
-	/**
-	 * Solitaire conditions to check if a specific move is valid for a autoCheck
-	 */
+	// Solitaire logic card move check, used for auto-tap feature.
 	public boolean acceptsCard(Card c) {
 		// Can not add to itself
 		if(this == (Pile) c.getParent()) return false;
@@ -244,8 +197,7 @@ public class Pile extends JLayeredPane {
 		Card topCard;
 		
 		switch(type) {
-		
-			// If for tableau pile.
+	
 			case TABLEAU:
 				// If it's empty it can only receive a King
 				if(cards.isEmpty()) {
@@ -254,7 +206,7 @@ public class Pile extends JLayeredPane {
 				}
 				
 				topCard = cards.get(cards.size() - 1);
-				// HJ: if the top card is reversed in Tableau, then a new card can't be placed there.
+				// if the top card is reversed in Tableau, then a new card can't be placed there.
 				if(topCard.isReversed) return false;
 				
 				// Different colour, consecutive values, descending
@@ -264,16 +216,15 @@ public class Pile extends JLayeredPane {
 				   }
 			break;
 			
-			// HJ: If for foundation pile.
 			case FOUNDATION:
 				
-				// Start with an ace
+				// Start with ace
 				if(cards.isEmpty() && newCard.value == 1) {
 					suitFilter = newCard.suit;
 					return true;
 				}
 				
-				// Has to be the same colour //HJ: more specifically, it has to be the same suit.
+				// It has to be the same suit.
 				if(suitFilter != newCard.suit) return false;
 				
 				// Consecutive values, ascending
@@ -284,28 +235,6 @@ public class Pile extends JLayeredPane {
 			break;
 		}
 		return false;
-	}
-	
-	public boolean isOptimizedDrawingEnabled() {
-        return false;
-	}
-
-	@Override
-	/**
-	 * Returns a string that contains all the cards in the pile.
-	 * @return {String} "-" Separated cards
-	 */
-	// HJ: Below is likely only needed to generate an xml file - potentially delete.
-	public String toString() {
-		String result = "";
-		
-		result += base.saveAsString() + "-";
-		
-		for(Card c : cards) {
-			result += c.saveAsString() + "-";
-		}
-		
-		return result;
 	}
 	
 	// Change baseline, so pile is aligned to top

@@ -6,19 +6,13 @@ import java.util.Random;
 
 import solitaire.Card.Suit;
 
-/**
- * A deck class to hold all 52 cards
- */
 public class Deck {
 	
 	ArrayList<Card> cards;
 	
-	/**
-	 * Class constructor
-	 */
 	public Deck() {
 		
-		// Create all the 52 cards
+		// Create all 52 cards
 		cards = new ArrayList<Card>();
 		
 		for(Suit suit : Suit.values()) {
@@ -28,9 +22,7 @@ public class Deck {
 		}
 	}
 
-	/**
-	 * Shuffles the deck 20 times by swapping the every card in deck with a random card somewhere in the pile. //HJ: recommented.
-	 */
+	// Shuffle deck 20 times by swapping the every card in deck with a random card somewhere in the pile.
 	public void shuffle() {
 		Random randIndex = new Random();
 		int size = cards.size();
@@ -41,18 +33,12 @@ public class Deck {
 		
 	}
 	
-	/**
-	 * Returns the size of the deck
-	 * @return {Integer} Number of cards in deck
-	 */
+	// Find number of cards in deck
 	public int size() {
 		return cards.size();
 	}
 	
-	/**
-	 * Draws a card from the pack. Pack must not be empty.
-	 * @return First card in pack
-	 */
+	// Draw first card in deck.
 	public Card drawCard() {
 		Card c = cards.get(0);
 		cards.remove(0);
