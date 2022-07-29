@@ -45,15 +45,16 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 		JPanel columns;
 		JPanel topColumns;
 		JLayeredPane lp;
-		Engine game;
+		Engine gameEngine;
 		
 		// Auxiliary elements to use while dragging
+		Pile originPile;
 		Pile tempPile;
 		Point mouseOffset;
 		
 
-		public GUI (Engine game) {			
-			this.game = game;
+		public GUI (Engine gameEngine) {			
+			this.gameEngine = gameEngine;
 			
 			// Initialize stuff
 			createTextMap();
@@ -124,20 +125,20 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			columns.removeAll();
 			
 			// Add a listener for each card
-			for(Card c: game.deck.cards) {
+			for(Card c: gameEngine.deck.cards) {
 				c.addMouseListener(this);
 				c.addMouseMotionListener(this);		
 			}
 			
-			game.setupGame();
-			for(Pile p : game.tableauPiles) {
+			gameEngine.setupGame();
+			for(Pile p : gameEngine.tableauPiles) {
 				columns.add(p);
 			}
 			
-			topColumns.add(game.stockPile);
-			topColumns.add(game.talonPile);
+			topColumns.add(gameEngine.stockPile);
+			topColumns.add(gameEngine.talonPile);
 			
-			for(Pile p : game.foundationPiles) {
+			for(Pile p : gameEngine.foundationPiles) {
 				topColumns.add(p);
 			}
 			
@@ -146,7 +147,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 		
 		// Resets the whole game
 		public void reset() {
-			game.resetCards();
+			gameEngine.resetCards();
 			initialize();
 			repaint();
 		}
@@ -271,15 +272,17 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 					case TABLEAU:
 //						JOptionPane.showMessageDialog(this, "Tableau card!");
 						// If foundation target doesn't exist, then check other tableau pile
-						if (!game.checkFoundationTarget(p,c)) {
-							game.checkPeerTableauTarget(p, c);
+						if (!gameEngine.checkFoundationTarget(p,c)) {
+							gameEngine.checkPeerTableauTarget(p, c);
 						}
+						// Flip if a card reamins in tableau pile.
+						gameEngine.clickPile(p);
 						
 						break;
 					case TALON:
 //						JOptionPane.showMessageDialog(this, "Talon card!");
-						if (!game.checkFoundationTarget(p,c)) {
-							game.checkTableauTarget(p, c);
+						if (!gameEngine.checkFoundationTarget(p,c)) {
+							gameEngine.checkTableauTarget(p, c);
 						}
 						break;
 					}
@@ -295,17 +298,17 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 					
 					switch(p.type) {
 						case STOCK:
-							game.drawCard();
+							gameEngine.drawCard();
 						break;
 						case TABLEAU:
-							game.clickPile(p);
+							gameEngine.clickPile(p);
 						break;
 						case TALON:
-							if (game.stockPile.isEmpty()) {
+							if (gameEngine.stockPile.isEmpty()) {
 								
-								if (!game.checkFoundationTarget(p,c)) {
-									if(!game.checkTableauTarget(p, c)){
-										game.turnTalonPile();										
+								if (!gameEngine.checkFoundationTarget(p,c)) {
+									if(!gameEngine.checkTableauTarget(p, c)){
+										gameEngine.turnTalonPile();										
 									}
 								}
 							}
@@ -330,6 +333,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				if(p.cards.isEmpty() || p.type == PileType.FOUNDATION) return;
 				
 				tempPile = p.split(c);
+				originPile = p;
 
 
 				lp.add(tempPile, JLayeredPane.DRAG_LAYER);
@@ -353,8 +357,8 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 				boolean match = false;
 				
 				// Check if pile can merge with the pile it is dropped on
-				ArrayList<Pile> droppable = new ArrayList<Pile>(game.tableauPiles);
-				droppable.addAll(game.foundationPiles);
+				ArrayList<Pile> droppable = new ArrayList<Pile>(gameEngine.tableauPiles);
+				droppable.addAll(gameEngine.foundationPiles);
 				
 				for(Pile p: droppable) {
 					Point pilePos = p.getLocationOnScreen();
@@ -374,11 +378,14 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 					
 				lp.remove(tempPile);
 				tempPile = null;
+				
+				// flip originPile's front facing card:
+				gameEngine.clickPile(originPile);
 
 				repaint();
 				
-				if(game.checkWin()) {
-					JOptionPane.showMessageDialog(this, "You won! Congrats!");
+				if(gameEngine.checkWin()) {
+					JOptionPane.showMessageDialog(this, "You win at Solitaire and at Life!");
 					reset();
 				}
 			}

@@ -101,7 +101,7 @@ public class Engine {
 	//TODO: -> Moe wants this triggered automatically. Add to the end of all click actions.
 	
 	public void clickPile(Pile p) {
-		if(!p.cards.isEmpty()) {
+		if(!p.cards.isEmpty()&&p.type==PileType.TABLEAU) {
 			Card c = p.cards.get(p.cards.size() - 1);
 			if(c.isReversed) {
 				c.isReversed = false;
