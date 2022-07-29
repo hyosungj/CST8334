@@ -60,7 +60,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener,
 			
 			
 			// Window settings
-			setTitle("CST8322 Group 2 Assignment 3 Release 2");
+			setTitle("CST8322 Group 2 Assignment 4 Release 3");
 			setSize(900, 1000);
 			
 			try {
